@@ -1,0 +1,112 @@
+/*=============================================
+              IPOS Source File
+===============================================*/
+#include <constb.h>
+#include <iob.h>
+
+long end_pos1;
+long end_pos2;
+long stop_pos1;
+long stop_pos2;
+long stop_pos3;
+long stop_pos4;
+long status;
+long direction;
+
+#define DI1 0b00000010
+#define DI2 0b00000100
+#define DI4 0b00010000
+#define DI5 0b00100000
+
+SSPOSRAMP travel_ramp;
+SSPOSSPEED travel_speed;
+
+main()
+  {
+
+   end_pos1 = 0;
+   end_pos2 = 10000;
+   stop_pos1 = 2000;
+   stop_pos2 = 4000;
+   stop_pos3 = 6000;
+   stop_pos4 = 8000;
+
+   travel_speed.CW = travel_speed.CCW = 1000;
+   travel_ramp.Up = travel_ramp.Down = 1000;
+
+   direction = 0;
+
+   _SetSys( SS_POSRAMP, travel_ramp );
+   _SetSys( SS_POSSPEED, travel_speed );
+
+   _GoAbs(GO_WAIT, end_pos1);
+
+  while(1)
+    {
+    _GetSys(status, GS_INPUTS);
+
+    switch (direction) {
+
+    case 0:
+
+    if ((status & DI1) != 0) {
+        _GoAbs(GO_WAIT, stop_pos1);
+        _Wait(2000);
+    }
+
+    if ((status & DI2) != 0) {
+        _GoAbs(GO_WAIT, stop_pos2);
+        _Wait(2000);
+    }
+
+    if ((status & DI4) != 0) {
+        _GoAbs(GO_WAIT, stop_pos3);
+        _Wait(2000);
+    }
+
+    if ((status & DI5) != 0) {
+        _GoAbs(GO_WAIT, stop_pos4);
+        _Wait(2000);
+    }
+
+
+    _GoAbs(GO_WAIT, end_pos2);
+    _Wait(2000);
+    direction = 1;
+    break;
+
+    case 1:
+
+    if ((status & DI5) != 0) {
+        _GoAbs(GO_WAIT, stop_pos4);
+        _Wait(2000);
+    }
+
+    if ((status & DI4) != 0) {
+        _GoAbs(GO_WAIT, stop_pos3);
+        _Wait(2000);
+    }
+
+    if ((status & DI2) != 0) {
+        _GoAbs(GO_WAIT, stop_pos2);
+        _Wait(2000);
+    }
+
+    if ((status & DI1) != 0) {
+        _GoAbs(GO_WAIT, stop_pos1);
+        _Wait(2000);
+    }
+
+
+    _GoAbs(GO_WAIT, end_pos1);
+    _Wait(2000);
+    direction = 0;
+    break;
+
+    default:
+    break;
+    }
+
+    }
+
+  }
