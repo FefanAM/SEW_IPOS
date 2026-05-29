@@ -1,0 +1,63 @@
+/*=============================================
+              IPOS Source File
+===============================================*/
+#include <constb.h>
+#include <iob.h>
+
+long status;
+long set_pos;
+long act_pos;
+long null;
+
+fn_jog() {
+
+    switch (status & 0b00000110) {
+      case 0b00000010:
+        _GoRel(GO_NOWAIT, 100);
+        break;
+      case 0b00000100:
+        _GoRel(GO_NOWAIT, -100);
+        break;
+      default:
+        break;
+    }
+
+}
+
+fn_ref() {
+    _SetSys(SS_ACTPOS, null);
+}
+
+fn_auto() {
+  if ((status & 0b00000010) != 0) {
+    _GoAbs(GO_WAIT, set_pos);
+  }
+}
+
+main()
+  {
+  set_pos = 100000;
+  null = 0;
+
+  while(1)
+    {
+
+    _GetSys(status, GS_INPUTS);
+    _GetSys(act_pos, GS_ACTPOS);
+    switch (status & 0b00110000) {
+      case 0b00010000:
+        fn_jog(status);
+        break;
+      case 0b00100000:
+        fn_ref();
+        break;
+      case 0b00110000:
+        fn_auto();
+        break;
+      default:
+        break;
+    }
+
+    }
+
+}
