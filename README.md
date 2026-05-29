@@ -30,7 +30,7 @@ Used for controlling MOVI-B frequency inverters.
 
 ## Cycle positioning
 
-- Set positins 0 and 1
+- Set positions 0 and 1
 - Move the drive continuously from one position to the other and back
 
 ## Stop at positions
