@@ -32,3 +32,10 @@ Used for controlling MOVI-B frequency inverters.
 
 - Set positins 0 and 1
 - Move the drive continuously from one position to the other and back
+
+## Stop at positions
+
+- Set end positions
+- Toggle positions within specified range
+- Stop at the toggled positions and wait
+- Toggle which positions to stop at with DI01, DI02, DI04, DI05
